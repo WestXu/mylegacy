@@ -1,11 +1,7 @@
 module {{sender}}::MyInstallments {
 	use 0x1::Signer;
 	use 0x1::Vector;
-
-	struct Payment has key, store {
-		id: u64,
-		value: u64,
-	}
+	use {{sender}}::TempPayment::{Payment, new_payment};
 
 	struct Installments has key, store {
 		total_value:u64,
@@ -21,7 +17,7 @@ module {{sender}}::MyInstallments {
 		let payments = Vector::empty<Payment>();
 		let id = 0;
 		while (id < times) {
-			Vector::push_back(&mut payments, Payment{id, value: value_each_payment});
+			Vector::push_back(&mut payments, new_payment(id, value_each_payment));
 			id = id + 1;
 		};
 
@@ -55,5 +51,16 @@ module {{sender}}::MyInstallments {
 
     public(script) fun pay(account: signer) acquires Installments {
     	Self::pay_once(&account)
+    }
+}
+
+module {{sender}}::TempPayment {
+	struct Payment has key, store {
+		id: u64,
+		value: u64,
+	}
+
+    public fun new_payment(id:u64, value:u64): Payment {
+		Payment{id, value}
     }
 }
