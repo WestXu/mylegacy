@@ -2,7 +2,19 @@ module {{sender}}::MyInstallments {
 	use 0x1::Signer;
 	use 0x1::Vector;
 	use 0x1::TransferScripts::peer_to_peer_v2;
-	use {{sender}}::TempPayment::{Payment, new_payment, get_value};
+
+	struct Payment has key, store {
+		id: u64,
+		value: u64,
+	}
+
+    public fun new_payment(id:u64, value:u64): Payment {
+		Payment{id, value}
+    }
+
+	public fun get_payment_value(payment: &Payment): u64 {
+		payment.value
+	}
 
 	struct Installments has key, store {
 		payee: address,
@@ -46,7 +58,7 @@ module {{sender}}::MyInstallments {
 
 		let payment = Vector::pop_back<Payment>(&mut installments.unpaid);
 
-		peer_to_peer_v2<0x1::STC::STC>(account, installments.payee, (get_value(&payment) as u128));
+		peer_to_peer_v2<0x1::STC::STC>(account, installments.payee, (get_payment_value(&payment) as u128));
 
 		Vector::push_back(&mut installments.paid, payment);
     }
@@ -58,19 +70,4 @@ module {{sender}}::MyInstallments {
     public(script) fun pay(account: signer) acquires Installments {
     	Self::pay_once(account)
     }
-}
-
-module {{sender}}::TempPayment {
-	struct Payment has key, store {
-		id: u64,
-		value: u64,
-	}
-
-    public fun new_payment(id:u64, value:u64): Payment {
-		Payment{id, value}
-    }
-
-	public fun get_value(payment: &Payment): u64 {
-		payment.value
-	}
 }
