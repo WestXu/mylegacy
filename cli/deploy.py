@@ -1,6 +1,6 @@
 from fire import Fire
 
-from move_cli import cli, logger, rprint, shell_run
+from move_cli import cli, logger, rprint
 
 
 def deploy(dev_ipc_file, address):
@@ -26,12 +26,11 @@ def deploy(dev_ipc_file, address):
         "mylegacy",
         "-o",
         "tmp",
+        "--hex",
         compiled_mv_file,
     )
-    packaged_blob_file = res['ok']['file']
+    print(res['ok']['hex'])
 
-    logger.info('Converting binary to hex...')
-    shell_run(["hexdump", "-v", "-e", '1/1 "%02x"', packaged_blob_file])
     print("\nGo deploy it at https://starmask-test-dapp.starcoin.org/")
 
 
