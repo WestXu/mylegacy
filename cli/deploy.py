@@ -19,8 +19,9 @@ def deploy(ipc_file):
     address = res['ok']['address']
 
     payee_address = cli(ipc_file, 'account', 'create', '-p', 'Bob')['ok']['address']
+    cli(ipc_file, 'account', 'unlock', '-p', 'Bob', payee_address)
 
-    cli(ipc_file, 'dev', 'get-coin', '-v', '1000000')
+    cli(ipc_file, 'dev', 'get-coin', '-v', '10')
     cli(ipc_file, 'dev', 'deploy', compiled_mv_file, '-b')
 
     cli(
@@ -37,12 +38,28 @@ def deploy(ipc_file):
         '10',
         '-b',
     )
+
+    rprint(
+        cli(
+            ipc_file,
+            'state',
+            'get',
+            'resource',
+            address,
+            f'{address}::MyInstallments::Installments',
+        )
+    )
+
+    cli(ipc_file, 'dev', 'get-coin', '-v', '10', payee_address)
+
     cli(
         ipc_file,
         'account',
         'execute-function',
         '--function',
-        f'{address}::MyInstallments::pay',
+        f'{address}::MyInstallments::redeem',
+        '-s',
+        payee_address,
         '-b',
     )
     rprint(

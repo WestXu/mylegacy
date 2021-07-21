@@ -1,20 +1,18 @@
 module {{sender}}::MyInstallments {
-	use 0x1::Signer;
 	use 0x1::Vector;
-	use 0x1::TransferScripts::peer_to_peer_v2;
+	use 0x1::Account;
+	use 0x1::Token::Token;
+	use 0x1::STC::STC;
 
 	struct Payment has key, store {
 		id: u64,
 		value: u64,
+		balance: Token<STC>,
 	}
 
-    public fun new_payment(id:u64, value:u64): Payment {
-		Payment{id, value}
+    public fun new_payment(account: &signer, id:u64, value:u64): Payment {
+		Payment{id, value, balance: Account::withdraw(account, (value as u128))}
     }
-
-	public fun get_payment_value(payment: &Payment): u64 {
-		payment.value
-	}
 
 	struct Installments has key, store {
 		payee: address,
@@ -23,16 +21,15 @@ module {{sender}}::MyInstallments {
 		times:u64,
 
 		unpaid: vector<Payment>,
-		paid: vector<Payment>,
 	}
 
-    public fun new_installments(payee: address, total_value:u64, times:u64): Installments {
+    public fun new_installments(account: &signer, payee: address, total_value:u64, times:u64): Installments {
 		let value_each_payment = total_value / times;
 
 		let payments = Vector::empty<Payment>();
 		let id = 0;
 		while (id < times) {
-			Vector::push_back(&mut payments, new_payment(id, value_each_payment));
+			Vector::push_back(&mut payments, new_payment(account, id, value_each_payment));
 			id = id + 1;
 		};
 
@@ -43,31 +40,30 @@ module {{sender}}::MyInstallments {
 			times,
 
 			unpaid: payments,
-			paid: Vector::empty<Payment>()
 		};
 
 		installments
     }
 
     public fun init(account: &signer, payee: address, total_value: u64, times: u64) {
-    	move_to(account, new_installments(payee, total_value, times));
+    	move_to(account, new_installments(account, payee, total_value, times));
     }
 	
-    public(script) fun pay_once(account: signer) acquires Installments {
-		let installments = borrow_global_mut<Installments>(Signer::address_of(&account));
+    public(script) fun redeem_once(account: signer) acquires Installments {
+		let sender_address: address = @{{sender}};
 
-		let payment = Vector::pop_back<Payment>(&mut installments.unpaid);
+		let installments = borrow_global_mut<Installments>(sender_address);
 
-		peer_to_peer_v2<0x1::STC::STC>(account, installments.payee, (get_payment_value(&payment) as u128));
+		let Payment {id: _, value: _, balance} = Vector::pop_back<Payment>(&mut installments.unpaid);
 
-		Vector::push_back(&mut installments.paid, payment);
+		Account::deposit_to_self<STC>(&account, balance);
     }
 
     public(script) fun init_installments(account: signer, payee: address, total_value: u64, times: u64) {
     	Self::init(&account, payee, total_value, times)
     }
 
-    public(script) fun pay(account: signer) acquires Installments {
-    	Self::pay_once(account)
+    public(script) fun redeem(account: signer) acquires Installments {
+    	Self::redeem_once(account)
     }
 }
