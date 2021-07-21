@@ -53,6 +53,8 @@ def deploy(ipc_file):
         '100',
         '--arg',
         '10',
+        '--arg',
+        '10',
         '-b',
     )
 
