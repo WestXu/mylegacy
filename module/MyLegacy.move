@@ -84,7 +84,7 @@ module {{sender}}::MyLegacy {
 		let legacy = borrow_global_mut<Legacy>(payer);
 
 		assert(
-			legacy.payee == payee || legacy.payee == payer, 
+			legacy.payee == payee || legacy.payer == payee, 
 			Errors::invalid_argument(EOFFER_DNE_FOR_ACCOUNT)
 		);
 
