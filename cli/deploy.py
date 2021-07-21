@@ -30,13 +30,13 @@ def deploy(ipc_file):
     cli(ipc_file, 'account', 'unlock', '-p', 'Bob', payee_address)
 
     logger.info("Contract address getting coin...")
-    cli(ipc_file, 'dev', 'get-coin', '-v', '10')
+    cli(ipc_file, 'dev', 'get-coin', '-v', '100')
 
     logger.info("Deploying contract to contract adress...")
     cli(ipc_file, 'dev', 'deploy', compiled_mv_file, '-b')
 
     logger.info("Payer Alice address getting coin...")
-    cli(ipc_file, 'dev', 'get-coin', '-v', '10', payer_address)
+    cli(ipc_file, 'dev', 'get-coin', '-v', '100', payer_address)
 
     logger.info("Payer Alice init_legacy to Bob...")
     cli(
@@ -50,7 +50,7 @@ def deploy(ipc_file):
         '--arg',
         payee_address,
         '--arg',
-        '100',
+        '1000000000',
         '--arg',
         '10',
         '--arg',
@@ -71,7 +71,7 @@ def deploy(ipc_file):
     )
 
     logger.info("Payee Bob address getting coin...")
-    cli(ipc_file, 'dev', 'get-coin', '-v', '10', payee_address)
+    cli(ipc_file, 'dev', 'get-coin', '-v', '100', payee_address)
 
     logger.info("Payee Bob redeeming his legacy...")
     cli(
@@ -100,10 +100,10 @@ def deploy(ipc_file):
     )
 
     logger.info("Showing payer Alice's account...")
-    rprint(cli(ipc_file, 'account', 'show', payer_address))
+    rprint(cli(ipc_file, 'account', 'show', payer_address)['ok']['balances'])
 
     logger.info("Showing payee Bob's account...")
-    rprint(cli(ipc_file, 'account', 'show', payee_address))
+    rprint(cli(ipc_file, 'account', 'show', payee_address)['ok']['balances'])
 
 
 if __name__ == "__main__":
