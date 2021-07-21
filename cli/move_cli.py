@@ -31,7 +31,7 @@ def cli(ipc_file: Union[str, Path], command: str, *args) -> dict:
         command,
     ] + list(args)
 
-    logger.info(' '.join(shell_run_args[3:]))
+    logger.debug('starcoin% ' + ' '.join(shell_run_args[3:]))
 
     res = shell_run(
         shell_run_args,
