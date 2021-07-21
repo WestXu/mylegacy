@@ -23,11 +23,11 @@ def shell_run(
         raise
 
 
-def cli(ipc_file: Union[str, Path], command: str, *args) -> dict:
+def cli(connect: Union[str, Path], command: str, *args) -> dict:
     shell_run_args = [
         './starcoin-artifacts/starcoin',
         '--connect',
-        str(ipc_file),
+        str(connect),
         command,
     ] + list(args)
 
