@@ -4,20 +4,29 @@ from move_cli import cli, logger, rprint
 
 
 def deploy(connect):
+    logger.info("Creating contract account named White...")
+    contract_address = cli(connect, 'account', 'create', '-p', 'White')['ok']['address']
+    logger.info("Unlocking White...")
+    cli(connect, 'account', 'unlock', '-p', 'White', contract_address)
+
     logger.info("Compiling module...")
     res = cli(
         connect,
         'dev',
         'compile',
         'mylegacy/module/MyLegacy.move',
+        '-s',
+        contract_address,
         '-o',
         'tmp/',
     )
     compiled_mv_file = res['ok'][0]
 
-    logger.info("Unlocking contract adress...")
-    res = cli(connect, 'account', 'unlock')
-    contract_adress = res['ok']['address']
+    logger.info("Contract address getting coin...")
+    cli(connect, 'dev', 'get-coin', '-v', '100', contract_address)
+
+    logger.info("Deploying contract to contract address...")
+    cli(connect, 'dev', 'deploy', compiled_mv_file, '-b')
 
     logger.info("Creating payer account named Alice...")
     payer_address = cli(connect, 'account', 'create', '-p', 'Alice')['ok']['address']
@@ -29,12 +38,6 @@ def deploy(connect):
     logger.info("Unlocking Bob...")
     cli(connect, 'account', 'unlock', '-p', 'Bob', payee_address)
 
-    logger.info("Contract address getting coin...")
-    cli(connect, 'dev', 'get-coin', '-v', '100')
-
-    logger.info("Deploying contract to contract adress...")
-    cli(connect, 'dev', 'deploy', compiled_mv_file, '-b')
-
     logger.info("Payer Alice address getting coin...")
     cli(connect, 'dev', 'get-coin', '-v', '100', payer_address)
 
@@ -44,7 +47,7 @@ def deploy(connect):
         'account',
         'execute-function',
         '--function',
-        f'{contract_adress}::MyLegacy::init_legacy',
+        f'{contract_address}::MyLegacy::init_legacy',
         '-s',
         payer_address,
         '--arg',
@@ -66,7 +69,7 @@ def deploy(connect):
             'get',
             'resource',
             payer_address,
-            f'{contract_adress}::MyLegacy::Legacy',
+            f'{contract_address}::MyLegacy::Legacy',
         )['ok']['json']
     )
 
@@ -79,7 +82,7 @@ def deploy(connect):
         'account',
         'execute-function',
         '--function',
-        f'{contract_adress}::MyLegacy::redeem',
+        f'{contract_address}::MyLegacy::redeem',
         '-s',
         payee_address,
         '--arg',
@@ -95,7 +98,7 @@ def deploy(connect):
             'get',
             'resource',
             payer_address,
-            f'{contract_adress}::MyLegacy::Legacy',
+            f'{contract_address}::MyLegacy::Legacy',
         )['ok']['json']
     )
 
