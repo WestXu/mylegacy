@@ -1,4 +1,4 @@
-module {{sender}}::MyInstallments {
+module {{sender}}::MyLegacy {
 	use 0x1::Signer;
 	use 0x1::Errors;
 	use 0x1::Vector;
@@ -16,7 +16,7 @@ module {{sender}}::MyInstallments {
 		Payment{id, value, balance: Account::withdraw(account, (value as u128))}
     }
 
-	struct Installments has key, store {
+	struct Legacy has key, store {
 		payee: address,
 
 		total_value:u64,
@@ -28,7 +28,7 @@ module {{sender}}::MyInstallments {
     /// An offer of the specified type for the account does not match
     const EOFFER_DNE_FOR_ACCOUNT: u64 = 101;
 
-    public fun new_installments(account: &signer, payee: address, total_value:u64, times:u64): Installments {
+    public fun new_legacy(account: &signer, payee: address, total_value:u64, times:u64): Legacy {
 		let value_each_payment = total_value / times;
 
 		let payments = Vector::empty<Payment>();
@@ -38,7 +38,7 @@ module {{sender}}::MyInstallments {
 			id = id + 1;
 		};
 
-		let installments = Installments {
+		let legacy = Legacy {
 			payee,
 
 			total_value,
@@ -47,34 +47,34 @@ module {{sender}}::MyInstallments {
 			unpaid: payments,
 		};
 
-		installments
+		legacy
     }
 
     public fun init(account: &signer, payee: address, total_value: u64, times: u64) {
-    	move_to(account, new_installments(account, payee, total_value, times));
+    	move_to(account, new_legacy(account, payee, total_value, times));
     }
 	
-    public(script) fun redeem_once(account: signer) acquires Installments {
+    public(script) fun redeem_once(account: signer) acquires Legacy {
 		let sender_address: address = @{{sender}};
 		let payee_address: address = Signer::address_of(&account);
 
-		let installments = borrow_global_mut<Installments>(sender_address);
+		let legacy = borrow_global_mut<Legacy>(sender_address);
 
 		assert(
-			installments.payee == payee_address || installments.payee == sender_address, 
+			legacy.payee == payee_address || legacy.payee == sender_address, 
 			Errors::invalid_argument(EOFFER_DNE_FOR_ACCOUNT)
 		);
 
-		let Payment {id: _, value: _, balance} = Vector::pop_back<Payment>(&mut installments.unpaid);
+		let Payment {id: _, value: _, balance} = Vector::pop_back<Payment>(&mut legacy.unpaid);
 
 		Account::deposit_to_self<STC>(&account, balance);
     }
 
-    public(script) fun init_installments(account: signer, payee: address, total_value: u64, times: u64) {
+    public(script) fun init_legacy(account: signer, payee: address, total_value: u64, times: u64) {
     	Self::init(&account, payee, total_value, times)
     }
 
-    public(script) fun redeem(account: signer) acquires Installments {
+    public(script) fun redeem(account: signer) acquires Legacy {
     	Self::redeem_once(account)
     }
 }

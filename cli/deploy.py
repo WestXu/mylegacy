@@ -9,7 +9,7 @@ def deploy(ipc_file):
         ipc_file,
         'dev',
         'compile',
-        'myinstallments/module/MyInstallments.move',
+        'mylegacy/module/MyLegacy.move',
         '-o',
         'tmp/',
     )
@@ -29,7 +29,7 @@ def deploy(ipc_file):
         'account',
         'execute-function',
         '--function',
-        f'{address}::MyInstallments::init_installments',
+        f'{address}::MyLegacy::init_legacy',
         '--arg',
         payee_address,
         '--arg',
@@ -46,7 +46,7 @@ def deploy(ipc_file):
             'get',
             'resource',
             address,
-            f'{address}::MyInstallments::Installments',
+            f'{address}::MyLegacy::Legacy',
         )
     )
 
@@ -57,7 +57,7 @@ def deploy(ipc_file):
         'account',
         'execute-function',
         '--function',
-        f'{address}::MyInstallments::redeem',
+        f'{address}::MyLegacy::redeem',
         '-s',
         payee_address,
         '-b',
@@ -69,7 +69,7 @@ def deploy(ipc_file):
             'get',
             'resource',
             address,
-            f'{address}::MyInstallments::Installments',
+            f'{address}::MyLegacy::Legacy',
         )
     )
     rprint(cli(ipc_file, 'account', 'show', address))
