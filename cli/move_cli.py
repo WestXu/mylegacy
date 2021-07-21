@@ -38,6 +38,8 @@ def cli(ipc_file: Union[str, Path], command: str, *args) -> dict:
         show_stdout=False,
         show_stderr=False,
     )
+    if 'failed' in res.stderr:
+        raise ValueError(f"{res.stderr}\n{res.stdout}")
     try:
         return json.loads(res.stdout)
     except json.decoder.JSONDecodeError:
