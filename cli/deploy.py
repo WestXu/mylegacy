@@ -16,7 +16,10 @@ def deploy(ipc_file):
     compiled_mv_file = res['ok'][0]
 
     res = cli(ipc_file, 'account', 'unlock')
-    address = res['ok']['address']
+    contract_adress = res['ok']['address']
+
+    payer_address = cli(ipc_file, 'account', 'create', '-p', 'Alice')['ok']['address']
+    cli(ipc_file, 'account', 'unlock', '-p', 'Alice', payer_address)
 
     payee_address = cli(ipc_file, 'account', 'create', '-p', 'Bob')['ok']['address']
     cli(ipc_file, 'account', 'unlock', '-p', 'Bob', payee_address)
@@ -24,12 +27,15 @@ def deploy(ipc_file):
     cli(ipc_file, 'dev', 'get-coin', '-v', '10')
     cli(ipc_file, 'dev', 'deploy', compiled_mv_file, '-b')
 
+    cli(ipc_file, 'dev', 'get-coin', '-v', '10', payer_address)
     cli(
         ipc_file,
         'account',
         'execute-function',
         '--function',
-        f'{address}::MyLegacy::init_legacy',
+        f'{contract_adress}::MyLegacy::init_legacy',
+        '-s',
+        payer_address,
         '--arg',
         payee_address,
         '--arg',
@@ -45,8 +51,8 @@ def deploy(ipc_file):
             'state',
             'get',
             'resource',
-            address,
-            f'{address}::MyLegacy::Legacy',
+            payer_address,
+            f'{contract_adress}::MyLegacy::Legacy',
         )
     )
 
@@ -57,9 +63,11 @@ def deploy(ipc_file):
         'account',
         'execute-function',
         '--function',
-        f'{address}::MyLegacy::redeem',
+        f'{contract_adress}::MyLegacy::redeem',
         '-s',
         payee_address,
+        '--arg',
+        payer_address,
         '-b',
     )
     rprint(
@@ -68,11 +76,11 @@ def deploy(ipc_file):
             'state',
             'get',
             'resource',
-            address,
-            f'{address}::MyLegacy::Legacy',
+            payer_address,
+            f'{contract_adress}::MyLegacy::Legacy',
         )
     )
-    rprint(cli(ipc_file, 'account', 'show', address))
+    rprint(cli(ipc_file, 'account', 'show', payer_address))
     rprint(cli(ipc_file, 'account', 'show', payee_address))
 
 

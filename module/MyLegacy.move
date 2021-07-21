@@ -17,6 +17,7 @@ module {{sender}}::MyLegacy {
     }
 
 	struct Legacy has key, store {
+		payer: address,
 		payee: address,
 
 		total_value:u64,
@@ -39,6 +40,7 @@ module {{sender}}::MyLegacy {
 		};
 
 		let legacy = Legacy {
+			payer: Signer::address_of(account),
 			payee,
 
 			total_value,
@@ -54,14 +56,13 @@ module {{sender}}::MyLegacy {
     	move_to(account, new_legacy(account, payee, total_value, times));
     }
 	
-    public(script) fun redeem_once(account: signer) acquires Legacy {
-		let sender_address: address = @{{sender}};
-		let payee_address: address = Signer::address_of(&account);
+    public(script) fun redeem_once(account: signer, payer: address) acquires Legacy {
+		let payee: address = Signer::address_of(&account);
 
-		let legacy = borrow_global_mut<Legacy>(sender_address);
+		let legacy = borrow_global_mut<Legacy>(payer);
 
 		assert(
-			legacy.payee == payee_address || legacy.payee == sender_address, 
+			legacy.payee == payee || legacy.payee == payer, 
 			Errors::invalid_argument(EOFFER_DNE_FOR_ACCOUNT)
 		);
 
@@ -74,7 +75,7 @@ module {{sender}}::MyLegacy {
     	Self::init(&account, payee, total_value, times)
     }
 
-    public(script) fun redeem(account: signer) acquires Legacy {
-    	Self::redeem_once(account)
+    public(script) fun redeem(account: signer, payer: address) acquires Legacy {
+    	Self::redeem_once(account, payer)
     }
 }
