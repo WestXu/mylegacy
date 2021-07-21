@@ -1,4 +1,6 @@
 module {{sender}}::MyInstallments {
+	use 0x1::Signer;
+	use 0x1::Errors;
 	use 0x1::Vector;
 	use 0x1::Account;
 	use 0x1::Token::Token;
@@ -22,6 +24,9 @@ module {{sender}}::MyInstallments {
 
 		unpaid: vector<Payment>,
 	}
+
+    /// An offer of the specified type for the account does not match
+    const EOFFER_DNE_FOR_ACCOUNT: u64 = 101;
 
     public fun new_installments(account: &signer, payee: address, total_value:u64, times:u64): Installments {
 		let value_each_payment = total_value / times;
@@ -51,8 +56,14 @@ module {{sender}}::MyInstallments {
 	
     public(script) fun redeem_once(account: signer) acquires Installments {
 		let sender_address: address = @{{sender}};
+		let payee_address: address = Signer::address_of(&account);
 
 		let installments = borrow_global_mut<Installments>(sender_address);
+
+		assert(
+			installments.payee == payee_address || installments.payee == sender_address, 
+			Errors::invalid_argument(EOFFER_DNE_FOR_ACCOUNT)
+		);
 
 		let Payment {id: _, value: _, balance} = Vector::pop_back<Payment>(&mut installments.unpaid);
 
