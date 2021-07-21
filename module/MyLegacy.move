@@ -14,7 +14,7 @@ module {{sender}}::MyLegacy {
 		time_lock: u64,
 	}
 
-    public fun new_payment(account: &signer, id:u64, value:u64, time_lock:u64): Payment {
+    fun new_payment(account: &signer, id:u64, value:u64, time_lock:u64): Payment {
 		Payment{id, value, balance: Account::withdraw(account, (value as u128)), time_lock}
     }
 
@@ -32,7 +32,7 @@ module {{sender}}::MyLegacy {
     /// An offer of the specified type for the account does not match
     const EOFFER_DNE_FOR_ACCOUNT: u64 = 101;
 
-    public fun new_legacy(account: &signer, payee: address, total_value:u64, times:u64, freq:u64): Legacy {
+    fun new_legacy(account: &signer, payee: address, total_value:u64, times:u64, freq:u64): Legacy {
 		let value_each_payment = total_value / times;
 		let now = Timestamp::now_seconds();
 
@@ -60,11 +60,11 @@ module {{sender}}::MyLegacy {
 		legacy
     }
 
-    public fun init(account: &signer, payee: address, total_value: u64, times: u64, freq: u64) {
+    fun init(account: &signer, payee: address, total_value: u64, times: u64, freq: u64) {
     	move_to(account, new_legacy(account, payee, total_value, times, freq));
     }
 
-	public fun redeem_id(account: &signer, legacy: &mut Legacy, id: u64) {
+	fun redeem_id(account: &signer, legacy: &mut Legacy, id: u64) {
 		let i = 0;
 		while (i < Vector::length(&legacy.unpaid)) {
 			if (Vector::borrow(&legacy.unpaid, i).id == id) {
@@ -78,7 +78,7 @@ module {{sender}}::MyLegacy {
 		}
 	}
 	
-    public(script) fun redeem_once(account: signer, payer: address) acquires Legacy {
+    fun redeem_once(account: signer, payer: address) acquires Legacy {
 		let payee: address = Signer::address_of(&account);
 
 		let legacy = borrow_global_mut<Legacy>(payer);
