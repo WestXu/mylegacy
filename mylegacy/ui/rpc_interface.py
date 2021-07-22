@@ -1,5 +1,7 @@
 from mylegacy.cli import rpc
-from mylegacy.cli.rpc import client, AccountAddress
+from mylegacy.cli.rpc import AccountAddress, client
+
+cli = client.Client("http://barnard.seed.starcoin.org:9850")
 
 
 def transfer(sender_private_key: str, payee_adress: str, amount: float):
@@ -43,6 +45,10 @@ def show_balance(address: str):
 if __name__ == "__main__":
     from fire import Fire
 
-    cli = client.Client("http://barnard.seed.starcoin.org:9850")
-
-    Fire([transfer, init_legacy, redeem])
+    Fire(
+        {
+            'transfer': transfer,
+            'init_legacy': init_legacy,
+            'redeem': redeem,
+        }
+    )
