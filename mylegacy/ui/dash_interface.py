@@ -13,201 +13,208 @@ app = dash.Dash(
         'https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css'
     ],
 )
-app.title = "My Legacy"
+app.title = "MyLegacy"
 app.layout = html.Div(
     html.Div(
         html.Div(
             dbc.Container(
-                dbc.Tabs(
-                    [
-                        dbc.Tab(
-                            dbc.Card(
-                                [
-                                    dbc.CardHeader([html.H1('Init Legacy')]),
-                                    dbc.CardBody(
-                                        [
-                                            dbc.FormGroup(
-                                                [
-                                                    dbc.Label("Private Key"),
-                                                    dbc.Input(
-                                                        id="init_legacy-private_key",
-                                                        placeholder="992e5...",
-                                                    ),
-                                                    dbc.FormText(
-                                                        "I know it's crazy to ask for your private key. "
-                                                        "But anyway, it's just Barnard.",
-                                                        color="secondary",
-                                                    ),
-                                                ],
-                                            ),
-                                            dbc.FormGroup(
-                                                [
-                                                    dbc.Label("Payee Address"),
-                                                    dbc.Input(
-                                                        id="init_legacy-payee_address",
-                                                        placeholder="004daef...",
-                                                    ),
-                                                    dbc.FormText(
-                                                        "Who do you wanna leave your legacy to?",
-                                                        color="secondary",
-                                                    ),
-                                                ]
-                                            ),
-                                            dbc.FormGroup(
-                                                dbc.Row(
+                [
+                    html.H1("MyLegacy"),
+                    html.P("Leave your legacy wisely."),
+                    html.Br(),
+                    dbc.Tabs(
+                        [
+                            dbc.Tab(
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader([html.H2('Init Legacy')]),
+                                        dbc.CardBody(
+                                            [
+                                                dbc.FormGroup(
                                                     [
-                                                        dbc.Col(
-                                                            [
-                                                                dbc.Label(
-                                                                    "Total Value"
-                                                                ),
-                                                                dbc.Input(
-                                                                    id="init_legacy-total_value",
-                                                                    value="1.0",
-                                                                    inputMode="numeric",
-                                                                    pattern=r"^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$|[1-9]\d*",
-                                                                ),
-                                                            ]
+                                                        dbc.Label("Private Key"),
+                                                        dbc.Input(
+                                                            id="init_legacy-private_key",
+                                                            placeholder="992e5...",
                                                         ),
-                                                        dbc.Col(
-                                                            [
-                                                                dbc.Label("Times"),
-                                                                dbc.Input(
-                                                                    id="init_legacy-times",
-                                                                    value="10",
-                                                                    inputMode="numeric",
-                                                                    pattern=r"^[1-9]\d*$",
-                                                                ),
-                                                            ]
+                                                        dbc.FormText(
+                                                            "I know it's crazy to ask for your private key. "
+                                                            "But anyway, it's just Barnard.",
+                                                            color="secondary",
+                                                        ),
+                                                    ],
+                                                ),
+                                                dbc.FormGroup(
+                                                    [
+                                                        dbc.Label("Payee Address"),
+                                                        dbc.Input(
+                                                            id="init_legacy-payee_address",
+                                                            placeholder="004daef...",
+                                                        ),
+                                                        dbc.FormText(
+                                                            "Who do you wanna leave your legacy to?",
+                                                            color="secondary",
                                                         ),
                                                     ]
                                                 ),
-                                            ),
-                                            dbc.FormGroup(
-                                                [
+                                                dbc.FormGroup(
                                                     dbc.Row(
                                                         [
                                                             dbc.Col(
                                                                 [
-                                                                    dbc.Label("Freq"),
+                                                                    dbc.Label(
+                                                                        "Total Value"
+                                                                    ),
                                                                     dbc.Input(
-                                                                        id="init_legacy-freq_num",
-                                                                        value="1",
+                                                                        id="init_legacy-total_value",
+                                                                        value="1.0",
+                                                                        inputMode="numeric",
+                                                                        pattern=r"^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$|[1-9]\d*",
+                                                                    ),
+                                                                ]
+                                                            ),
+                                                            dbc.Col(
+                                                                [
+                                                                    dbc.Label("Times"),
+                                                                    dbc.Input(
+                                                                        id="init_legacy-times",
+                                                                        value="10",
                                                                         inputMode="numeric",
                                                                         pattern=r"^[1-9]\d*$",
                                                                     ),
                                                                 ]
                                                             ),
-                                                            dbc.Col(
-                                                                [
-                                                                    dbc.Label(
-                                                                        "Time Unit"
-                                                                    ),
-                                                                    dbc.Select(
-                                                                        id="init_legacy-freq_unit",
-                                                                        options=[
-                                                                            {
-                                                                                "label": "Years",
-                                                                                "value": "1",
-                                                                            },
-                                                                            {
-                                                                                "label": "Months",
-                                                                                "value": "2",
-                                                                            },
-                                                                            {
-                                                                                "label": "Days",
-                                                                                "value": "3",
-                                                                            },
-                                                                            {
-                                                                                "label": "Hours",
-                                                                                "value": "4",
-                                                                            },
-                                                                            {
-                                                                                "label": "Minutes",
-                                                                                "value": "5",
-                                                                            },
-                                                                            {
-                                                                                "label": "Seconds",
-                                                                                "value": "6",
-                                                                            },
-                                                                        ],
-                                                                        value="2",
-                                                                    ),
-                                                                ]
-                                                            ),
                                                         ]
                                                     ),
-                                                ],
-                                            ),
-                                            dbc.Button(
-                                                "Submit",
-                                                color="primary",
-                                                id='init_legacy-button',
-                                            ),
-                                            dbc.Alert(
-                                                "",
-                                                id='init_legacy-alert',
-                                                style={'white-space': 'pre-wrap'},
-                                                is_open=False,
-                                            ),
-                                        ]
-                                    ),
-                                ]
+                                                ),
+                                                dbc.FormGroup(
+                                                    [
+                                                        dbc.Row(
+                                                            [
+                                                                dbc.Col(
+                                                                    [
+                                                                        dbc.Label(
+                                                                            "Freq"
+                                                                        ),
+                                                                        dbc.Input(
+                                                                            id="init_legacy-freq_num",
+                                                                            value="1",
+                                                                            inputMode="numeric",
+                                                                            pattern=r"^[1-9]\d*$",
+                                                                        ),
+                                                                    ]
+                                                                ),
+                                                                dbc.Col(
+                                                                    [
+                                                                        dbc.Label(
+                                                                            "Time Unit"
+                                                                        ),
+                                                                        dbc.Select(
+                                                                            id="init_legacy-freq_unit",
+                                                                            options=[
+                                                                                {
+                                                                                    "label": "Years",
+                                                                                    "value": "1",
+                                                                                },
+                                                                                {
+                                                                                    "label": "Months",
+                                                                                    "value": "2",
+                                                                                },
+                                                                                {
+                                                                                    "label": "Days",
+                                                                                    "value": "3",
+                                                                                },
+                                                                                {
+                                                                                    "label": "Hours",
+                                                                                    "value": "4",
+                                                                                },
+                                                                                {
+                                                                                    "label": "Minutes",
+                                                                                    "value": "5",
+                                                                                },
+                                                                                {
+                                                                                    "label": "Seconds",
+                                                                                    "value": "6",
+                                                                                },
+                                                                            ],
+                                                                            value="2",
+                                                                        ),
+                                                                    ]
+                                                                ),
+                                                            ]
+                                                        ),
+                                                    ],
+                                                ),
+                                                dbc.Button(
+                                                    "Submit",
+                                                    color="primary",
+                                                    id='init_legacy-button',
+                                                ),
+                                                dbc.Alert(
+                                                    "",
+                                                    id='init_legacy-alert',
+                                                    style={'white-space': 'pre-wrap'},
+                                                    is_open=False,
+                                                ),
+                                            ]
+                                        ),
+                                    ]
+                                ),
+                                label='Init Legacy',
                             ),
-                            label='Init Legacy',
-                        ),
-                        dbc.Tab(
-                            dbc.Card(
-                                [
-                                    dbc.CardHeader([html.H1('Redeem')]),
-                                    dbc.CardBody(
-                                        [
-                                            dbc.FormGroup(
-                                                [
-                                                    dbc.Label("Private Key"),
-                                                    dbc.Input(
-                                                        id="redeem-private_key",
-                                                        placeholder="992e5...",
-                                                    ),
-                                                    dbc.FormText(
-                                                        "I know it's crazy to ask for your private key. "
-                                                        "But anyway, it's just Barnard.",
-                                                        color="secondary",
-                                                    ),
-                                                ]
-                                            ),
-                                            dbc.FormGroup(
-                                                [
-                                                    dbc.Label("Payer Address"),
-                                                    dbc.Input(
-                                                        id="redeem-payer_address",
-                                                        placeholder="004daef...",
-                                                    ),
-                                                    dbc.FormText(
-                                                        "Who is leaving you the legacy?",
-                                                        color="secondary",
-                                                    ),
-                                                ]
-                                            ),
-                                            dbc.Button(
-                                                "Submit",
-                                                color="primary",
-                                                id='redeem-button',
-                                            ),
-                                            dbc.Alert(
-                                                "",
-                                                id='redeem-alert',
-                                                style={'white-space': 'pre-wrap'},
-                                                is_open=False,
-                                            ),
-                                        ]
-                                    ),
-                                ]
+                            dbc.Tab(
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader([html.H2('Redeem')]),
+                                        dbc.CardBody(
+                                            [
+                                                dbc.FormGroup(
+                                                    [
+                                                        dbc.Label("Private Key"),
+                                                        dbc.Input(
+                                                            id="redeem-private_key",
+                                                            placeholder="992e5...",
+                                                        ),
+                                                        dbc.FormText(
+                                                            "I know it's crazy to ask for your private key. "
+                                                            "But anyway, it's just Barnard.",
+                                                            color="secondary",
+                                                        ),
+                                                    ]
+                                                ),
+                                                dbc.FormGroup(
+                                                    [
+                                                        dbc.Label("Payer Address"),
+                                                        dbc.Input(
+                                                            id="redeem-payer_address",
+                                                            placeholder="004daef...",
+                                                        ),
+                                                        dbc.FormText(
+                                                            "Who is leaving you the legacy?",
+                                                            color="secondary",
+                                                        ),
+                                                    ]
+                                                ),
+                                                dbc.Button(
+                                                    "Submit",
+                                                    color="primary",
+                                                    id='redeem-button',
+                                                ),
+                                                dbc.Alert(
+                                                    "",
+                                                    id='redeem-alert',
+                                                    style={'white-space': 'pre-wrap'},
+                                                    is_open=False,
+                                                ),
+                                            ]
+                                        ),
+                                    ]
+                                ),
+                                label="Redeem",
                             ),
-                            label="Redeem",
-                        ),
-                    ],
-                )
+                        ],
+                    ),
+                ]
             ),
             style={"margin-left": "auto", "margin-right": "auto", "width": "600px"},
         ),
