@@ -308,5 +308,6 @@ def redeem_calback(n_clicks, private_key, payer_address):
 if __name__ == '__main__':
     app.run_server(
         host='0.0.0.0',
+        port='10123',
         debug=False,
     )
