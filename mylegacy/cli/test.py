@@ -1,5 +1,7 @@
 from fire import Fire
 
+from time import sleep
+
 from move_cli import cli, logger, rprint
 
 
@@ -57,7 +59,7 @@ def deploy(connect):
         '--arg',
         '10',
         '--arg',
-        '10',
+        '3',
         '-b',
     )
 
@@ -77,6 +79,35 @@ def deploy(connect):
     cli(connect, 'dev', 'get-coin', '-v', '100', payee_address)
 
     logger.info("Payee Bob redeeming his legacy...")
+    cli(
+        connect,
+        'account',
+        'execute-function',
+        '--function',
+        f'{contract_address}::MyLegacy::redeem',
+        '-s',
+        payee_address,
+        '--arg',
+        payer_address,
+        '-b',
+    )
+
+    logger.info("Showing again payer Alice's legacy...")
+    rprint(
+        cli(
+            connect,
+            'state',
+            'get',
+            'resource',
+            payer_address,
+            f'{contract_address}::MyLegacy::Legacy',
+        )['ok']['json']
+    )
+
+    logger.info("Waiting for 3 seconds...")
+    sleep(3)
+
+    logger.info("Payee Bob redeeming his legacy again...")
     cli(
         connect,
         'account',
