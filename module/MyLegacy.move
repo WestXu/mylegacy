@@ -90,12 +90,13 @@ module {{sender}}::MyLegacy {
 
 		let now = Timestamp::now_seconds();
 		let redeemable_ids = Vector::empty<u64>();
-		let id = 0;
-		while (id < legacy.times) {
-			if (Vector::borrow(&legacy.unpaid, id).time_lock < now) {
-				Vector::push_back(&mut redeemable_ids, id);
+		let i = 0;
+		while (i < Vector::length(&legacy.unpaid)) {
+			let payment = Vector::borrow(&legacy.unpaid, i);
+			if (payment.time_lock < now) {
+				Vector::push_back(&mut redeemable_ids, payment.id);
 			};
-			id = id + 1;
+			i = i + 1;
 		};
 
 		while (Vector::length(&redeemable_ids) > 0) {
