@@ -9,3 +9,4 @@ tmp/
 node_modules
 mylegacy/ui/assets/bundle.js
 yarn.lock
+yarn-error.log
