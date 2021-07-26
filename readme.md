@@ -8,4 +8,4 @@ Leave your legacy wisely.
 
 ## CLI
 
-`pip install -e . && python mylegacy/cli/rpc_interface.py --help`
+`pip install -e . && python mylegacy/ui/rpc_interface.py --help`
