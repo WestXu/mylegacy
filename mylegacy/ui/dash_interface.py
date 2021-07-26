@@ -5,7 +5,14 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-from mylegacy.ui.rpc_interface import init_legacy, redeem
+import visdcc
+
+from mylegacy.cli.rpc import (
+    redeem,
+    utils,
+    init_legacy,
+    TransactionPayload__ScriptFunction,
+)
 
 app = dash.Dash(
     __name__,
@@ -19,6 +26,8 @@ app.layout = html.Div(
         html.Div(
             dbc.Container(
                 [
+                    visdcc.Run_js(id='javascript'),
+                    visdcc.Run_js(id='javascript2'),
                     html.H1("MyLegacy"),
                     html.P("Leave your legacy wisely."),
                     html.Br(),
@@ -30,20 +39,6 @@ app.layout = html.Div(
                                         dbc.CardHeader([html.H2('Init Legacy')]),
                                         dbc.CardBody(
                                             [
-                                                dbc.FormGroup(
-                                                    [
-                                                        dbc.Label("Private Key"),
-                                                        dbc.Input(
-                                                            id="init_legacy-private_key",
-                                                            placeholder="992e5...",
-                                                        ),
-                                                        dbc.FormText(
-                                                            "I know it's crazy to ask for your private key. "
-                                                            "But anyway, it's just Barnard.",
-                                                            color="secondary",
-                                                        ),
-                                                    ],
-                                                ),
                                                 dbc.FormGroup(
                                                     [
                                                         dbc.Label("Payee Address"),
@@ -170,20 +165,6 @@ app.layout = html.Div(
                                             [
                                                 dbc.FormGroup(
                                                     [
-                                                        dbc.Label("Private Key"),
-                                                        dbc.Input(
-                                                            id="redeem-private_key",
-                                                            placeholder="992e5...",
-                                                        ),
-                                                        dbc.FormText(
-                                                            "I know it's crazy to ask for your private key. "
-                                                            "But anyway, it's just Barnard.",
-                                                            color="secondary",
-                                                        ),
-                                                    ]
-                                                ),
-                                                dbc.FormGroup(
-                                                    [
                                                         dbc.Label("Payer Address"),
                                                         dbc.Input(
                                                             id="redeem-payer_address",
@@ -231,12 +212,24 @@ app.layout = html.Div(
 )
 
 
+def js_send_txn(script: TransactionPayload__ScriptFunction, alert_id) -> str:
+    payloadInHex = "0x02" + script.value.bcs_serialize().hex()
+    return f"""
+        window.initialize().then(
+            async () => {{
+                await window.connect()
+                await window.send_transaction({payloadInHex!r}, {alert_id!r})
+            }}
+        )
+    """
+
+
 @app.callback(
+    Output('javascript', 'run'),
     Output("init_legacy-alert", "is_open"),
     Output("init_legacy-alert", "children"),
     Output("init_legacy-alert", "color"),
     Input("init_legacy-button", "n_clicks"),
-    State("init_legacy-private_key", "value"),
     State("init_legacy-payee_address", "value"),
     State("init_legacy-total_value", "value"),
     State("init_legacy-times", "value"),
@@ -244,7 +237,7 @@ app.layout = html.Div(
     State("init_legacy-freq_unit", "value"),
 )
 def inti_legacy_calback(
-    n_clicks, private_key, payee_address, total_value, times, freq_num, freq_unit
+    n_clicks, payee_address, total_value, times, freq_num, freq_unit
 ):
     if n_clicks is None:
         raise PreventUpdate
@@ -258,57 +251,58 @@ def inti_legacy_calback(
             '5': 60,  # Minutes
             '6': 1,  # Seconds
         }[freq_unit]
-        txn_hash = init_legacy(
-            sender_private_key=private_key,
-            payee_adress=payee_address,
+
+        script = init_legacy(
+            payee=utils.account_address(payee_address),
             total_value=float(total_value),
             times=int(times),
             freq=freq,
         )
-        return (
-            True,
-            "Successfully submitted your transaction. "
-            "Check it out at "
-            f"https://stcscan.io/barnard/transactions/detail/{txn_hash}",
-            "success",
-        )
+        js_script = js_send_txn(script, "init_legacy-alert")
     except Exception:
         return (
+            "",
             True,
             traceback.format_exc(),
             "danger",
+        )
+    else:
+        return (
+            js_script,
+            True,
+            "Submitting your transaction...",
+            "success",
         )
 
 
 @app.callback(
+    Output('javascript2', 'run'),
     Output("redeem-alert", "is_open"),
     Output("redeem-alert", "children"),
     Output("redeem-alert", "color"),
     Input("redeem-button", "n_clicks"),
-    State("redeem-private_key", "value"),
     State("redeem-payer_address", "value"),
 )
-def redeem_calback(n_clicks, private_key, payer_address):
+def redeem_calback(n_clicks, payer_address):
     if n_clicks is None:
         raise PreventUpdate
 
     try:
-        txn_hash = redeem(
-            sender_private_key=private_key,
-            payer_adress=payer_address,
-        )
-        return (
-            True,
-            "Successfully submitted your transaction. "
-            "Check it out at "
-            f"https://stcscan.io/barnard/transactions/detail/{txn_hash}",
-            "success",
-        )
+        script = redeem(utils.account_address(payer_address))
+        js_script = js_send_txn(script, 'redeem_alert')
     except Exception:
         return (
+            "",
             True,
             traceback.format_exc(),
             "danger",
+        )
+    else:
+        return (
+            js_script,
+            True,
+            "Submitting your transaction...",
+            "success",
         )
 
 

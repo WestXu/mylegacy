@@ -44,30 +44,23 @@ def sign(
 
 
 def transfer(
-    cli: client.Client,
-    sender: local_account.LocalAccount,
     payee: AccountAddress,
     amount: st.uint128,
-):
-
-    script = stdlib.encode_peer_to_peer_v2_script_function(
+) -> TransactionPayload__ScriptFunction:
+    return stdlib.encode_peer_to_peer_v2_script_function(
         token_type=utils.currency_code("STC"),
         payee=payee,
         amount=amount,
     )
 
-    return sign(cli, sender, script)
-
 
 def init_legacy(
-    cli: client.Client,
-    sender: local_account.LocalAccount,
     payee: AccountAddress,
     total_value: int,
     times: int,
     freq: int,
-):
-    script = TransactionPayload__ScriptFunction(
+) -> TransactionPayload__ScriptFunction:
+    return TransactionPayload__ScriptFunction(
         value=ScriptFunction(
             module=ModuleId(
                 address=utils.account_address("75DFf64C86a0c8aCb5Ad883169b515c0"),
@@ -83,15 +76,10 @@ def init_legacy(
             ],
         )
     )
-    return sign(cli, sender, script)
 
 
-def redeem(
-    cli: client.Client,
-    sender: local_account.LocalAccount,
-    payer: AccountAddress,
-):
-    script = TransactionPayload__ScriptFunction(
+def redeem(payer: AccountAddress) -> TransactionPayload__ScriptFunction:
+    return TransactionPayload__ScriptFunction(
         value=ScriptFunction(
             module=ModuleId(
                 address=utils.account_address("75DFf64C86a0c8aCb5Ad883169b515c0"),
@@ -104,7 +92,6 @@ def redeem(
             ],
         )
     )
-    return sign(cli, sender, script)
 
 
 def private_key_to_account(private_key_hex: str) -> local_account.LocalAccount:

@@ -5,11 +5,13 @@ cli = client.Client("http://barnard.seed.starcoin.org:9850")
 
 
 def transfer(sender_private_key: str, payee_adress: str, amount: float):
-    return rpc.transfer(
+    return rpc.sign(
         cli,
         sender=rpc.private_key_to_account(sender_private_key),
-        payee=utils.account_address(payee_adress),
-        amount=int(amount * 1e9),
+        script=rpc.transfer(
+            payee=utils.account_address(payee_adress),
+            amount=int(amount * 1e9),
+        ),
     )
 
 
@@ -20,21 +22,25 @@ def init_legacy(
     times: int,
     freq: int,
 ):
-    return rpc.init_legacy(
+    return rpc.sign(
         cli,
         sender=rpc.private_key_to_account(sender_private_key),
-        payee=utils.account_address(payee_adress),
-        total_value=int(total_value * 1e9),
-        times=times,
-        freq=freq,
+        script=rpc.init_legacy(
+            payee=utils.account_address(payee_adress),
+            total_value=int(total_value * 1e9),
+            times=times,
+            freq=freq,
+        ),
     )
 
 
 def redeem(sender_private_key: str, payer_adress: str):
-    return rpc.redeem(
+    return rpc.sign(
         cli,
         sender=rpc.private_key_to_account(sender_private_key),
-        payer=utils.account_address(payer_adress),
+        script=rpc.redeem(
+            payer=utils.account_address(payer_adress),
+        ),
     )
 
 

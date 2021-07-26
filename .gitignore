@@ -6,3 +6,6 @@ __pycache__/
 .vscode
 .pytest_cache
 tmp/
+node_modules
+mylegacy/ui/assets/bundle.js
+yarn.lock
