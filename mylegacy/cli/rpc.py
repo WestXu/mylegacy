@@ -63,7 +63,7 @@ def init_legacy(
     return TransactionPayload__ScriptFunction(
         value=ScriptFunction(
             module=ModuleId(
-                address=utils.account_address("75DFf64C86a0c8aCb5Ad883169b515c0"),
+                address=utils.account_address("0xe11eA1971774192FD96bA7FCA842128F"),
                 name=Identifier("MyLegacy"),
             ),
             function=Identifier("init_legacy"),
@@ -82,7 +82,7 @@ def redeem(payer: AccountAddress) -> TransactionPayload__ScriptFunction:
     return TransactionPayload__ScriptFunction(
         value=ScriptFunction(
             module=ModuleId(
-                address=utils.account_address("75DFf64C86a0c8aCb5Ad883169b515c0"),
+                address=utils.account_address("0xe11eA1971774192FD96bA7FCA842128F"),
                 name=Identifier("MyLegacy"),
             ),
             function=Identifier("redeem"),

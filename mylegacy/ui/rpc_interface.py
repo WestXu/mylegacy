@@ -1,7 +1,7 @@
 from mylegacy.cli import rpc
 from mylegacy.cli.rpc import client, utils
 
-cli = client.Client("http://barnard.seed.starcoin.org:9850")
+cli = client.Client("http://main.seed.starcoin.org:9850")
 
 
 def transfer(sender_private_key: str, payee_adress: str, amount: float):

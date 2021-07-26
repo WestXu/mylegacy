@@ -46,7 +46,7 @@ window.send_transaction = async (payloadInHex, alert_id) => {
     })
     console.log({ transactionHash })
     alert.className = "alert alert-success fade show"
-    alert.innerHTML = `Successfully submitted your transaction. Check it out at https://stcscan.io/barnard/transactions/detail/${transactionHash}`
+    alert.innerHTML = `Successfully submitted your transaction. Check it out at https://stcscan.io/main/transactions/detail/${transactionHash}`
 
   } catch (error) {
     console.error({ error })
