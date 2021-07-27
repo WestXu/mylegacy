@@ -3,16 +3,11 @@ import traceback
 import dash
 import dash_bootstrap_components as dbc
 import dash_html_components as html
+import visdcc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-import visdcc
-
-from mylegacy.cli.rpc import (
-    redeem,
-    utils,
-    init_legacy,
-    TransactionPayload__ScriptFunction,
-)
+from mylegacy.cli.rpc import (TransactionPayload__ScriptFunction, init_legacy,
+                              redeem, utils)
 
 app = dash.Dash(
     __name__,
@@ -254,7 +249,7 @@ def inti_legacy_calback(
 
         script = init_legacy(
             payee=utils.account_address(payee_address),
-            total_value=float(total_value),
+            total_value=int(float(total_value) * 1e9),
             times=int(times),
             freq=freq,
         )
