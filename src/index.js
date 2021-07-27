@@ -46,7 +46,8 @@ window.send_transaction = async (payloadInHex, alert_id) => {
     })
     console.log({ transactionHash })
     alert.className = "alert alert-success fade show"
-    alert.innerHTML = `Successfully submitted your transaction. Check it out at https://stcscan.io/main/transactions/detail/${transactionHash}`
+    alert.innerHTML = ("Successfully submitted your transaction. " +
+      `<a href="https://staratlas.vercel.app/main/tx/${transactionHash}" target="_blank">Check it out.`)
 
   } catch (error) {
     console.error({ error })
