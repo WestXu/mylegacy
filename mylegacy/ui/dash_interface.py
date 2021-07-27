@@ -289,7 +289,7 @@ def redeem_calback(n_clicks, payer_address):
 
     try:
         script = redeem(utils.account_address(payer_address))
-        js_script = js_send_txn(script, 'redeem_alert')
+        js_script = js_send_txn(script, 'redeem-alert')
     except Exception:
         return (
             "",
