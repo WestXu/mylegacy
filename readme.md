@@ -2,6 +2,10 @@
 
 Leave your legacy wisely.
 
+## Screenshot
+
+![screenshot](screenshot.png)
+
 ## Host
 
 `pip install -e . && yarn build && python mylegacy/ui/dash_interface.python`
