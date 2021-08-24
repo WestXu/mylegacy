@@ -5,10 +5,6 @@ on: workflow_dispatch
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./interface
-
     steps:
       - uses: actions/checkout@v2
 
@@ -20,11 +16,8 @@ jobs:
         with:
           cmd: build
 
-      - name: remove junk
-        run: rm -rf node_moduels packege.json yarn.lock .gitignore
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./interface

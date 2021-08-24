@@ -4,7 +4,7 @@
       "node": ">= 10"
     },
     "scripts": {
-      "build": "webpack --mode production -o assets/bundle.js"
+      "build": "webpack --mode production -o interface/assets/bundle.js"
     },
     "dependencies": {
       "@ethersproject/bytes": "^5.0.6",
