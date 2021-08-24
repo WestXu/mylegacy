@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>MyLegacy</title>
+    <style>
+        /* following 3 to centralize page */
+        #inner-div {
+            margin-left: auto;
+            margin-right: auto;
+            width: 600px
+        }
+
+        #middle-div {
+            display: table-cell;
+            vertical-align: middle
+        }
+
+        #outer-div {
+            display: table;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch/dist/sketchy/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="outer-div">
+        <div id="middle-div">
+            <div id="inner-div">
+                <div class="container">
+                    <h1>MyLegacy</h1>
+                    <p>Leave your legacy wisely.</p>
+                    <br>
+                    <div>
+                        <!-- Nav tabs -->
+                        <ul class=" nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="init_legacy-tab" data-bs-toggle="tab"
+                                    data-bs-target="#init_legacy" role="tab" aria-controls="init_legacy"
+                                    aria-selected="true">Init Legacy</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="redeem-tab" data-bs-toggle="tab" data-bs-target="#redeem"
+                                    role="tab" aria-controls="redeem" aria-selected="false">Redeem</button>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="init_legacy" role="tabpanel"
+                                aria-labelledby="init_legacy-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>Init Legacy</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="">Payee Address</label>
+                                            <input class="form-control" id="init_legacy-payee_address"
+                                                placeholder="004daef..." value="">
+                                            <div class="form-text">Who do you wanna leave your legacy to?</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="">Total Value</label>
+                                                    <input class="form-control" id="init_legacy-total_value"
+                                                        inputmode="numeric"
+                                                        pattern="^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$|[1-9]\d*" value="1.0">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="">Times</label>
+                                                    <input class="form-control" id="init_legacy-times"
+                                                        inputmode="numeric" pattern="^[1-9]\d*$" value="10">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="">Freq</label>
+                                                    <input class="form-control" id="init_legacy-freq_num"
+                                                        inputmode="numeric" pattern="^[1-9]\d*$" value="1">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="">Time Unit</label>
+                                                    <select id="init_legacy-freq_unit" placeholder=""
+                                                        class="form-select">
+                                                        <option value="1">Years</option>
+                                                        <option selected value="2">Months</option>
+                                                        <option value="3">Days</option>
+                                                        <option value="4">Hours</option>
+                                                        <option value="5">Minutes</option>
+                                                        <option value="6">Seconds</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button id="init_legacy-button" class="btn btn-primary">Submit</button>
+                                        <div id="init_legacy-alert" role="alert" style="white-space: pre;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="redeem" role="tabpanel" aria-labelledby="redeem-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h2>Redeem</h2>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="">Payer Address</label>
+                                                <input class="form-control" id="redeem-payer_address"
+                                                    placeholder="004daef..." value="">
+                                                <div class="form-text">Who is leaving you the legacy?</div>
+                                            </div>
+                                        </form>
+                                        <button id="redeem-button" class="btn btn-primary">Submit</button>
+                                        <div id="redeem-alert" role="alert" style="white-space: pre;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/bundle.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js">
+    </script>
+</body>
+
+</html>
