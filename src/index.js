@@ -16,7 +16,8 @@ window.initialize = async (alert_id) => {
     // We must specify the network as 'any' for starcoin to allow network changes
     window.starcoinProvider = new providers.Web3Provider(window.starcoin, 'any')
   } catch (error) {
-    window.show_alert(false, `Error: ${error.message}`, alert_id)
+    window.show_alert(false, ("Error: Couldn't find StarMask. " +
+      `<a href="https://github.com/starcoinorg/starmask-extension" target="_blank">Install.</a>`), alert_id)
     throw error
   }
 }
