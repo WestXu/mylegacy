@@ -4,31 +4,35 @@ import { providers, utils, bcs } from '@starcoin/starcoin'
 
 const contract_address = "0xe11eA1971774192FD96bA7FCA842128F"
 
-window.initialize = async () => {
+window.show_alert = (is_success, html_msg, alert_id) => {
+  const alert = document.getElementById(alert_id)
+  alert.className = `alert alert-${is_success ? "success" : "danger"} fade show`
+  alert.innerHTML = html_msg
+}
+
+window.initialize = async (alert_id) => {
   console.log('initialize')
   try {
-    if (window.starcoin) {
-      // We must specify the network as 'any' for starcoin to allow network changes
-      window.starcoinProvider = new providers.Web3Provider(window.starcoin, 'any')
-    }
+    // We must specify the network as 'any' for starcoin to allow network changes
+    window.starcoinProvider = new providers.Web3Provider(window.starcoin, 'any')
   } catch (error) {
-    console.error(error)
+    window.show_alert(false, `Error: ${error.message}`, alert_id)
+    throw error
   }
 }
 
-window.connect = async () => {
+window.connect = async (alert_id) => {
   try {
     await window.starcoin.request({
       method: 'stc_requestAccounts',
     })
   } catch (error) {
-    console.error(error)
+    window.show_alert(false, `Error: ${error.message}`, alert_id)
+    throw error
   }
 }
 
 window.send_transaction = async (payloadInHex, alert_id) => {
-  const alert = document.getElementById(alert_id)
-
   try {
     console.log({ payloadInHex })
 
@@ -36,14 +40,14 @@ window.send_transaction = async (payloadInHex, alert_id) => {
       data: payloadInHex,
     })
     console.log({ transactionHash })
-    alert.className = "alert alert-success fade show"
-    alert.innerHTML = ("Successfully submitted your transaction. " +
-      `<a href="https://staratlas.vercel.app/${window.starcoinProvider.network.name}/tx/${transactionHash}" target="_blank">Check it out.</a>`)
+
+    window.show_alert(true, ("Successfully submitted your transaction. " +
+      `<a href="https://staratlas.vercel.app/${window.starcoinProvider.network.name}/tx/${transactionHash}" target="_blank">Check it out.</a>`), alert_id)
+
 
   } catch (error) {
-    console.error({ error })
-    alert.className = "alert alert-danger fade show"
-    alert.innerHTML = `Error: ${error.message}`
+    window.show_alert(false, `Error: ${error.message}`, alert_id)
+    throw error
   }
 }
 
@@ -94,8 +98,8 @@ function transfer() {
 
 
 document.getElementById("redeem-button").onclick = async () => {
-  await window.initialize()
-  await window.connect()
+  await window.initialize('redeem-alert')
+  await window.connect('redeem-alert')
   await window.send_transaction(
     getPayloadInHex(
       `${contract_address}::MyLegacy::redeem`,
@@ -109,8 +113,8 @@ document.getElementById("redeem-button").onclick = async () => {
 }
 
 document.getElementById("init_legacy-button").onclick = async () => {
-  await window.initialize()
-  await window.connect()
+  await window.initialize('init_legacy-alert')
+  await window.connect('init_legacy-alert')
   await window.send_transaction(
     getPayloadInHex(
       `${contract_address}::MyLegacy::init_legacy`,
